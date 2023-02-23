@@ -1,0 +1,19 @@
+# Search for the process matching the given pattern
+PID=$(ps -ef | grep "/home/${FILES_USER}/[a]pps/${ARTIFACT_NAME}" | awk '{print $2}')
+
+if [ -n "$PID" ]; then
+  # If the process is running, kill it and check again
+  echo "Process is running. Killing..."
+  kill -9 $PID
+  sleep 30  # Wait for the process to terminate
+
+  # Check if the process is still running
+  PID=$(ps -ef | grep "/home/${FILES_USER}/[a]pps/${ARTIFACT_NAME}" | awk '{print $2}')
+  if [ -n "$PID" ]; then
+    echo "Process is still running. Deployment failed."
+    exit 1
+  fi
+fi
+
+echo "Process is not running. Continuing with deployment."
+# Add the rest of your deployment commands here
